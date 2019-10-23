@@ -1,0 +1,30 @@
+plugins {
+    id 'groovy'
+    id 'java'
+    id 'java-gradle-plugin'
+}
+
+group 'VanillaGradle'
+version '1.0-SNAPSHOT'
+
+//sourceCompatibility = 11
+
+repositories {
+    maven { url 'https://maven.aliyun.com/repository/public/' }
+    jcenter()
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.11'
+    compile gradleApi()
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'org.simplejavamail',name:'simple-java-mail',version: '5.4.0'
+    compile 'com.alibaba:fastjson:1.2.61'
+    compile group: 'org.ow2.asm', name: 'asm-commons', version: '7.2'
+    //compile "io.netty:netty-all:4.1.25.Final"
+}
+manifest{
+
+}
