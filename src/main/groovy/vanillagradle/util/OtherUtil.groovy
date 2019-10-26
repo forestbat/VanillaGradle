@@ -184,19 +184,6 @@ class OtherUtil {
         project.files(result)
     }
 
-    @NotNull
-    static Map<String, Object> getIdeaSystemProperties(@NotNull Path configDirectory,
-                                                       @NotNull Path systemDirectory,
-                                                       @NotNull Path pluginsDirectory,
-                                                       @NotNull List<String> requirePluginIds) {
-        def result = ["idea.config.path" : configDirectory.absolutePath,
-                      "idea.system.path" : systemDirectory.absolutePath,
-                      "idea.plugins.path": pluginsDirectory.absolutePath]
-        if (!requirePluginIds.empty) {
-            result.put("idea.required.plugins.id", requirePluginIds.join(","))
-        }
-        result
-    }
 
     @NotNull
     static List<String> getJvmArgs(@NotNull JavaForkOptions options,
@@ -210,33 +197,9 @@ class OtherUtil {
         return result as List<String>
     }
 
-    /*@NotNull
-    static File ideaSdkDirectory(@NotNull VanillaGradleExtension extension) {
-        def path = extension.mappedMinecraftProvider.mappedJar
-        if (path) {
-            def dir = ideaDir(path.toString())
-            if (!dir.exists()) {
-                def ideaDirectory = extension.ideaDependency.classes
-                //extension.error("Cannot find alternate SDK path: $dir. Default IDEA will be used : $ideaDirectory")
-                return ideaDirectory
-            }
-            return dir
-        }
-        return extension.ideaDependency.classes
-    }*/
 
     @NotNull
-    /* static String ideaBuildNumber(@NotNull File ideaDirectory) {
-        if (OperatingSystem.current().isMacOsX()) {
-            def file = new File(ideaDirectory, "Resources/build.txt")
-            if (file.exists()) {
-                return file.getText('UTF-8').trim()
-            }
-        }
-        return new File(ideaDirectory, "build.txt").getText('UTF-8').trim()
-    }*/
-
-    static Node parseXml(File file) {
+    static Node parseXml(Path file) {
         def parser = new XmlParser(false, true, true)
         parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
         parser.setErrorHandler(new ErrorHandler() {
@@ -255,8 +218,8 @@ class OtherUtil {
                 throw e
             }
         })
-        InputStream inputStream = new FileInputStream(file)
-        InputSource input = new InputSource(new InputStreamReader(inputStream, "UTF-8"))
+        InputStream inputStream = file.newInputStream()
+        InputSource input = new InputSource(inputStream.newReader("UTF-8"))
         input.setEncoding("UTF-8")
         try {
             return parser.parse(input)
@@ -305,17 +268,6 @@ class OtherUtil {
             markUpToDate.accept(targetDirectory, markerFile)
         }
         return targetDirectory
-    }
-
-    private static def MAJOR_VERSION_PATTERN = Pattern.compile('\\d{4}\\.\\d-SNAPSHOT')
-    static String releaseType(@NotNull String version) {
-        if (version.endsWith('-EAP-SNAPSHOT') || version.endsWith('-EAP-CANDIDATE-SNAPSHOT') || version.endsWith('-CUSTOM-SNAPSHOT') || MAJOR_VERSION_PATTERN.matcher(version).matches()) {
-            return 'snapshots'
-        }
-        if (version.endsWith('-SNAPSHOT')) {
-            return 'nightly'
-        }
-        return 'releases'
     }
 }
 

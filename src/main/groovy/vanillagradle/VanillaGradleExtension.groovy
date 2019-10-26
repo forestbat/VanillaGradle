@@ -27,52 +27,7 @@ class VanillaGradleExtension {
         this.project = project
     }
 
-    /*void addUnmappedMod(Path path) {
-        unmappedModList.add(path)
-    }
-
-    List<Path> getUnmappedModList() {
-        return unmappedModList
-    }
-
-    void setInstallJson(JsonObject object) {
-        this.jsonObject = object
-    }
-
-    def getInstallerJson() {
-        return this.jsonObject
-    }
-
-    Path getUserCache() {
-        Path userCache = Paths.get(project.gradle.getGradleUserHomeDir().toString(), "caches" + FileSystems.default.separator + "vanilla_gradle")
-        return userCache
-    }*/
-
-    Path getRootProjectPersistentCache() {
-        Path rootPersistentCache = Paths.get(project.getRootProject().file(OtherUtil.FINAL_GRADLE_CACHE).toString(), "vanilla")
-        return rootPersistentCache
-    }
-
-    /*Path getRootProjectBuildCache() {
-        Path rootBuildCache = Paths.get(project.getRootProject().getBuildDir().toString(), "vanilla_cache")
-        return rootBuildCache
-    }
-
-    Path getProjectBuildCache() {
-        Path buildCache = Paths.get(project.getBuildDir().toString(), "vanilla_cache")
-        return buildCache
-    }
-
-    Path getRemappedModCache() {
-        Path remappedModCache = Paths.get(getRootProjectPersistentCache().toString(), "remapped_mods")
-        return remappedModCache
-    }
-
-    Path getNestedModCache() {
-        Path nestedModCache = Paths.get(getRootProjectPersistentCache().toString(), "nested_mods")
-        return nestedModCache
-    }*/
-
+    @Deprecated
     static Dependency getDependency(Project project, Collection<Configuration> configurations, BiPredicate<String, String> filter) {
         configurations.forEach({ configuration ->
             configuration.getDependencies().forEach({ dependency ->
