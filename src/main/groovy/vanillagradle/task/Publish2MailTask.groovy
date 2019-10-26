@@ -22,7 +22,7 @@ class Publish2MailTask extends SourceTask{
         def fileSource=new FileDataSource(Paths.get(".gradle/out/"+fileName).toFile())
         if (email.matches(pattern)) {
             def mailer= MailerBuilder.withSMTPServer("smtp.host.com",22202,userMail,"password")
-            .withSessionTimeout(10000).withProperty("mail.smtp.sendpartial", true as String).
+            .withSessionTimeout(10000).withProperty("mail.smtp.sendpartial", "true").
                     withDebugLogging(true).buildMailer()
             def email= EmailBuilder.startingBlank().to("forestbat","2282857898@qq.com").
                     withPlainText("Please view this email in a modern email client!")

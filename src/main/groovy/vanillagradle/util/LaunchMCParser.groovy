@@ -12,7 +12,6 @@ import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 import java.util.concurrent.TimeUnit
 
-//是否一定要有parameter才能执行?
 abstract class LaunchMCParser implements WorkAction {
     JSONObject launcherJson
     JSONObject versionJson
@@ -42,7 +41,7 @@ abstract class LaunchMCParser implements WorkAction {
                 def httpRequestVersion = HttpRequest.newBuilder(uri).build()
                 versionJson = OtherUtil.HTTP_CLIENT.sendAsync(httpRequestVersion, HttpResponse.BodyHandlers.ofFileDownload(
                         OtherUtil.FINAL_GRADLE_CACHE,StandardOpenOption.CREATE)).
-                        thenApply(()->{JSON.parseObject(versionJsonPath.text)}).get(600, TimeUnit.SECONDS)
+                        thenApply(()->JSON.parseObject(versionJsonPath.text)).get(600, TimeUnit.SECONDS)
                 return versionJson
             }
             else if(Files.exists(versionJsonPath)){
@@ -85,7 +84,7 @@ abstract class LaunchMCParser implements WorkAction {
         }
     }
 
-    @Override
+    @Overrided
     void execute() {
         parseVersionJson(extension.minecraftVersion)
         parseGameJson()

@@ -3,6 +3,7 @@ package vanillagradle.task
 import com.alibaba.fastjson.JSON
 import org.gradle.api.tasks.JavaExec
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.workers.WorkParameters
 import org.gradle.workers.WorkerExecutor
 import vanillagradle.VanillaGradleExtension
 import vanillagradle.util.LaunchMCParser
@@ -24,6 +25,7 @@ class RunMCTask extends JavaExec {
 
     @Override
     void exec() {
+        //todo
         super.exec()
     }
 
@@ -37,13 +39,11 @@ class RunMCTask extends JavaExec {
         else return "net.minecraft.launchwrapper.Launch"
     }
 
-
     List<String> getJvmArgs() {
         def jvmList=new ArrayList()
         if(!Files.exists(versionJsonPath))
-            workExecutor.noIsolation().submit(LaunchMCParser,parameter->{})
+            workExecutor.noIsolation().submit(LaunchMCParser,()-> WorkParameters.None)
         else{
-            //def versionJson=JSON.parseObject(versionJsonPath.text)
             if(OperatingSystem.current().isMacOsX())
                 jvmList.add("-XstartOnFirstThread")
             if(OperatingSystem.current().isWindows()){

@@ -49,7 +49,7 @@ class VanillaGradleExtension {
     }*/
 
     Path getRootProjectPersistentCache() {
-        Path rootPersistentCache = Paths.get(project.getRootProject().file(OtherUtil.FINAL_GRADLE_CACHE).toString(), "vanilla_cache")
+        Path rootPersistentCache = Paths.get(project.getRootProject().file(OtherUtil.FINAL_GRADLE_CACHE).toString(), "vanilla")
         return rootPersistentCache
     }
 

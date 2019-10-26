@@ -1,6 +1,6 @@
 package vanillagradle.remapper
 
-
+import org.gradle.workers.WorkParameters
 import org.gradle.workers.WorkerExecutor
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
@@ -34,10 +34,8 @@ class OfficialDeobfParser {
     }
     String version=vanillaGradleExtension.minecraftVersion
     void applyMappings(){
-        if(!Files.exists(MAPPED_MC_JAR)){
-            def merger=new JarMerger()
-            merger.merge()
-        }
+        if(!Files.exists(MAPPED_MC_JAR))
+            workerExecutor.noIsolation().submit(JarMerger,()-> WorkParameters.None)
         else{
             def remapper=new SimpleRemapper(parseMappings())
             def methodRemmaper=new MethodRemapper(new InstructionAdapter(),remapper)

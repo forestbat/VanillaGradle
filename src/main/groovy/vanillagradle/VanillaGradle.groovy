@@ -18,7 +18,6 @@ class VanillaGradle implements Plugin<Project> {
         project.register("migrate", MigrateMappingTask)
         project.register("publish-fabric", RemapSource2FabricTask)
         project.register("runMCClient", RunMCTask)
-        //project.register("launchanddownload", LaunchMCParserTask)
 
         project.extensions.add("minecraft",VanillaGradleExtension)
     }

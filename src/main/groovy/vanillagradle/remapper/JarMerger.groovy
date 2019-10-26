@@ -1,6 +1,9 @@
 package vanillagradle.remapper
 
 import groovy.json.internal.Charsets
+import org.gradle.process.internal.worker.request.WorkerAction
+import org.gradle.workers.WorkAction
+import org.gradle.workers.WorkerExecutor
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
@@ -16,12 +19,15 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 
-class JarMerger implements AutoCloseable {
+abstract class JarMerger implements WorkAction,AutoCloseable{
     VanillaGradleExtension extension
+    WorkerExecutor workerExecutor
     @Inject
-    JarMerger(VanillaGradleExtension extension){
+    JarMerger(WorkerExecutor workerExecutor,VanillaGradleExtension extension){
         this.extension=extension
+        this.workerExecutor=workerExecutor
     }
+
     class Entry {
         final Path path
         final BasicFileAttributes metadata
@@ -46,27 +52,16 @@ class JarMerger implements AutoCloseable {
     private final String version=extension.minecraftVersion
     private final Path inputClient = Path.of(OtherUtil.FINAL_GRADLE_CACHE.toString(),  version,"client.jar")
     private final Path inputServer = Path.of(OtherUtil.FINAL_GRADLE_CACHE.toString(),  version,"server.jar")
-    //private final FileSystem output = FileSystems.default
     private final Map<String, Entry> entriesClient = new HashMap<>()
     private final Map<String, Entry> entriesServer = new HashMap<>()
     private final Set<String> entriesAll = new TreeSet<>()
-    //private boolean removeSnowmen = false
-    //private boolean offsetSyntheticsParams = false
-
-    /* void enableSnowmanRemoval() {
-         removeSnowmen = true
-     }
-
-     void enableSyntheticParamsOffset() {
-         offsetSyntheticsParams = true
-     }*/
 
     @Override
     void close() throws IOException {
 
     }
 
-    private void readToMap(Map<String, Entry> map, Path input, boolean isServer) {
+    private void readToMap(Map<String, Entry> map, Path input) {
         try {
             Files.walkFileTree(input, new SimpleFileVisitor<Path>() {
                 @Override
@@ -92,7 +87,7 @@ class JarMerger implements AutoCloseable {
                         return FileVisitResult.CONTINUE
                     }
 
-                    byte[] output = Files.readAllBytes(path)
+                    byte[] output = path.bytes
                     map.put(path.toString().substring(1), new Entry(path, attr, output))
                     return FileVisitResult.CONTINUE
                 }
@@ -122,11 +117,9 @@ class JarMerger implements AutoCloseable {
                 )
     }
 
-    void merge() throws IOException {
-        ExecutorService service = Executors.newFixedThreadPool(4)
-        service.submit(() -> readToMap(entriesClient, inputClient, false))
-        service.submit(() -> readToMap(entriesServer, inputServer, true))
-        service.shutdown()
+    void execute() throws IOException {
+        readToMap(entriesClient, inputClient)
+        readToMap(entriesServer, inputServer)
         try {
             service.awaitTermination(1, TimeUnit.HOURS)
         } catch (InterruptedException e) {
@@ -177,14 +170,6 @@ class JarMerger implements AutoCloseable {
                     if (side != null) {
                         visitor = new ClassMerger.SidedClassVisitor(Opcodes.ASM7, visitor, side)
                     }
-
-                    /*if (removeSnowmen) {
-                        visitor = new SnowmanClassVisitor(Opcodes.ASM7, visitor)
-                    }
-
-                    if (offsetSyntheticsParams) {
-                        visitor = new SyntheticParameterClassVisitor(Opcodes.ASM7, visitor)
-                    }*/
 
                     if (visitor != writer) {
                         reader.accept(visitor, 0)

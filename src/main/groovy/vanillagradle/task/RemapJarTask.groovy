@@ -21,13 +21,12 @@ class RemapJarTask extends Jar {
         addNestedDependencies = project.objects.property(Boolean)
     }
 
-     @TaskAction
-     void doTask() throws Throwable {
-         def extension = project.extensions.getByType(VanillaGradleExtension)
-         def input = input.getAsFile().get().toPath()
-         def output = outputs
-     }
-
+    @TaskAction
+    void doTask() throws Throwable {
+        def extension = project.extensions.getByType(VanillaGradleExtension)
+        def input = input.getAsFile().get().toPath()
+        def output = outputs
+    }
 
 
     @InputFile
@@ -36,7 +35,7 @@ class RemapJarTask extends Jar {
     }
 
     @Input
-     Property<Boolean> getAddNestedDependencies() {
+    Property<Boolean> getAddNestedDependencies() {
         return addNestedDependencies
     }
 }

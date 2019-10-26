@@ -2,6 +2,7 @@ package vanillagradle.task
 
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
+import org.gradle.workers.WorkParameters
 import org.gradle.workers.WorkerExecutor
 import vanillagradle.VanillaGradleExtension
 import vanillagradle.remapper.OfficialDeobfParser
@@ -26,7 +27,7 @@ class MigrateMappingTask extends SourceTask {
         Path clientMappingPath = Path.of(OtherUtil.FINAL_GRADLE_CACHE.toString(),extension.minecraftVersion,"client.txt")
         Path serverMappingPath=Path.of(OtherUtil.FINAL_GRADLE_CACHE.toString(),extension.minecraftVersion,"server.txt")
         if(!Files.exists(clientMappingPath) || !Files.exists(serverMappingPath)){
-            executor.noIsolation().submit(LaunchMCParser,parameter->{})
+            executor.noIsolation().submit(LaunchMCParser,()->WorkParameters.None)
         }
         else{
             def parser=new OfficialDeobfParser(extension,executor)
