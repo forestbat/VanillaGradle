@@ -2,12 +2,14 @@ package vanillagradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.buildinit.tasks.InitBuild
 import vanillagradle.task.MigrateMappingTask
 import vanillagradle.task.NewProjectWithDeobfTask
 import vanillagradle.task.Publish2MailTask
 import vanillagradle.task.RemapJarTask
 import vanillagradle.task.RemapSource2FabricTask
-import vanillagradle.task.RunMCTask
+import vanillagradle.task.RunMCClientTask
+
 
 class VanillaGradle implements Plugin<Project> {
     @Override
@@ -17,8 +19,9 @@ class VanillaGradle implements Plugin<Project> {
         project.register("remapJar", RemapJarTask)
         project.register("migrate", MigrateMappingTask)
         project.register("publish-fabric", RemapSource2FabricTask)
-        project.register("runMCClient", RunMCTask)
+        project.register("runMCClient", RunMCClientTask)
 
         project.extensions.add("minecraft",VanillaGradleExtension)
+        project.tasks.getByName("NewProjectWithDeobfTask").dependsOn(InitBuild)
     }
 }

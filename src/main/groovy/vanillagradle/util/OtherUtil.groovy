@@ -42,7 +42,7 @@ class OtherUtil {
     static final def HTTP_CLIENT = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(60)).
             executor(Executors.newFixedThreadPool(4)).sslContext(SSLContext.getDefault()).build()
     private static Path GRADLE_CACHE = Path.of(System.getenv("GRADLE_USER_HOME"),"caches","vanilla")
-    static final Path FINAL_GRADLE_CACHE=Files.exists(GRADLE_CACHE)?Files.createDirectory(GRADLE_CACHE):GRADLE_CACHE;
+    static final Path FINAL_GRADLE_CACHE=Files.exists(GRADLE_CACHE)?Files.createDirectory(GRADLE_CACHE):GRADLE_CACHE
     static final URI ALL_MANIFEST = new URI("https://launchermeta.mojang.com/mc/game/version_manifest.json")
     //static final Pattern VERSION_PATTERN = Pattern.compile('^([A-Z]{2})-([0-9.A-z]+)\\s*$')
 
@@ -55,16 +55,6 @@ class OtherUtil {
         } catch (IOException ignored) {
             logger.warn("Error reading ETag file '{}'.", etagPath.toFile())
             return null
-        }
-    }
-    static void saveEtag(Path to,String eTag,Logger logger){
-        Path etagPath=Path.of(to.toString(),".etag")
-        if (!Files.exists(etagPath))
-            return
-        try{
-            Files.asCharSink(etagPath.toFile(), StandardCharsets.UTF_8).write(eTag)
-        } catch (IOException e) {
-            logger.warn("Error saving ETag file '{}'.", etagPath.toFile(), e)
         }
     }
     static String toNiceSize(long bytes) {
@@ -163,25 +153,6 @@ class OtherUtil {
         artifact.classifier=classifier
         artifact.extension=extension
         return artifact
-    }
-
-    @NotNull
-    static FileCollection sourcePluginXmlFiles(@NotNull Project project) {
-        Set<File> result = new HashSet<>()
-        mainSourceSet(project).resources.srcDirs.each {
-            def pluginXml = new File(it, "META-INF/plugin.xml")
-            if (pluginXml.exists()) {
-                try {
-                    if (parseXml(pluginXml).name() == 'idea-plugin') {
-                        result += pluginXml
-                    }
-                } catch (SAXParseException ignore) {
-                    project.getLogger().warn("Cannot read ${pluginXml}. Skipping.")
-                    project.getLogger().debug("Cannot read ${pluginXml}", ignore)
-                }
-            }
-        }
-        project.files(result)
     }
 
 

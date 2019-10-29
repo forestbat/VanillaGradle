@@ -13,12 +13,12 @@ import javax.inject.Inject
 import java.nio.file.Files
 import java.nio.file.Path
 
-class RunMCTask extends JavaExec {
+class RunMCClientTask extends JavaExec {
     private WorkerExecutor workExecutor
     private def version=project.extensions.getByType(VanillaGradleExtension).minecraftVersion
     private def versionJsonPath= Path.of(OtherUtil.FINAL_GRADLE_CACHE.toString(),version+"-vanilla.json")
     @Inject
-    RunMCTask(WorkerExecutor workExecutor) {
+    RunMCClientTask(WorkerExecutor workExecutor) {
         super()
         this.workExecutor=workExecutor
     }

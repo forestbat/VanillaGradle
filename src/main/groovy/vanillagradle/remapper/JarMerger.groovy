@@ -120,12 +120,6 @@ abstract class JarMerger implements WorkAction,AutoCloseable{
     void execute() throws IOException {
         readToMap(entriesClient, inputClient)
         readToMap(entriesServer, inputServer)
-        try {
-            service.awaitTermination(1, TimeUnit.HOURS)
-        } catch (InterruptedException e) {
-            e.printStackTrace()
-        }
-
         entriesAll.addAll(entriesClient.keySet())
         entriesAll.addAll(entriesServer.keySet())
 

@@ -45,7 +45,7 @@ class NewProjectWithDeobfTask extends SourceTask {
             url= "https://libraries.minecraft.net/"
             url= 'https://maven.aliyun.com/repository/public/'
         }
-        this.project.dependencies.create(depend -> {
+        this.project.dependencies.create((String depend) -> {
             def iterator = versionJson.get().entrySet().stream().
                     filter(entry -> entry.key == "name").iterator()
             if(iterator.hasNext())

@@ -30,11 +30,11 @@ class MigrateMappingTask extends SourceTask {
             executor.noIsolation().submit(LaunchMCParser,()->WorkParameters.None)
         }
         else{
-            def parser=new OfficialDeobfParser(extension,executor)
             def collection=project.files(project.projectDir)
             for(File file:collection){
                 byte[] bytes=file.bytes
                 //todo
+                executor.noIsolation().submit(OfficialDeobfParser,()->WorkParameters.None)
             }
         }
     }

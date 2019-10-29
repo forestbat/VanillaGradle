@@ -84,7 +84,7 @@ abstract class LaunchMCParser implements WorkAction {
         }
     }
 
-    @Overrided
+    @Override
     void execute() {
         parseVersionJson(extension.minecraftVersion)
         parseGameJson()
