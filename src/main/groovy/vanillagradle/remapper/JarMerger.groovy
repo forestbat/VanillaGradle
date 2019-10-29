@@ -1,7 +1,6 @@
 package vanillagradle.remapper
 
 import groovy.json.internal.Charsets
-import org.gradle.process.internal.worker.request.WorkerAction
 import org.gradle.workers.WorkAction
 import org.gradle.workers.WorkerExecutor
 import org.objectweb.asm.ClassReader
@@ -14,12 +13,9 @@ import javax.inject.Inject
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributeView
 import java.nio.file.attribute.BasicFileAttributes
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 
-abstract class JarMerger implements WorkAction,AutoCloseable{
+abstract class JarMerger implements WorkAction{
     VanillaGradleExtension extension
     WorkerExecutor workerExecutor
     @Inject
@@ -41,25 +37,12 @@ abstract class JarMerger implements WorkAction,AutoCloseable{
     }
 
     private static final ClassMerger CLASS_MERGER = new ClassMerger()
-
-    Path getInputClient() {
-        return inputClient
-    }
-
-    Path getInputServer() {
-        return inputServer
-    }
     private final String version=extension.minecraftVersion
     private final Path inputClient = Path.of(OtherUtil.FINAL_GRADLE_CACHE.toString(),  version,"client.jar")
     private final Path inputServer = Path.of(OtherUtil.FINAL_GRADLE_CACHE.toString(),  version,"server.jar")
     private final Map<String, Entry> entriesClient = new HashMap<>()
     private final Map<String, Entry> entriesServer = new HashMap<>()
     private final Set<String> entriesAll = new TreeSet<>()
-
-    @Override
-    void close() throws IOException {
-
-    }
 
     private void readToMap(Map<String, Entry> map, Path input) {
         try {

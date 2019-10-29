@@ -136,7 +136,7 @@ class ClassMerger {
         }
 
         nodeC.interfaces.addAll(nodeS.interfaces)
-        Set<String> mergeItfs=nodeC.interfaces
+        //Set<String> mergeItfs=nodeC.interfaces
         nodeOut.interfaces = new ArrayList<>()
 
         Set<String> clientItfs = new HashSet<>()
